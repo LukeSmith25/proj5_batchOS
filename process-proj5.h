@@ -1,3 +1,12 @@
+/**
+ * file: process-proj5.h
+ * author: Luke Smith
+ * course: CSI 3334
+ * assignment: project 5
+ * due date: November 6, 2022
+ *
+ * Process file containing all operations for process class.
+ */
 #ifndef PROCESS_PROJ5_H
 #define PROCESS_PROJ5_H
 
@@ -63,6 +72,16 @@ class Process {
         string information;
 };
 
+/**
+ * Process Constructor
+ *
+ * This function is the default constructor for Process.
+ *
+ * Parameters:
+ *      int: integer representing id
+ *
+ * Return value: None.
+ */
 Process::Process(int theId) {
     id = theId;
     deadline = 1;
@@ -70,11 +89,33 @@ Process::Process(int theId) {
     information = "";
 }
 
+/**
+ * run
+ *
+ * This function prints information and returns the result of the process
+ * running.
+ *
+ * Parameters:
+ *      int: integer representing current system time
+ *
+ * Return value: integer representing time after execution
+ */
 int Process::run(int currentSystemTime) const {
     cout << information << endl;
     return requiredTime + currentSystemTime;
 }
 
+/**
+ * cancomplete
+ *
+ * This function returns a boolean representing if a function can complete
+ * before a specified time.
+ *
+ * Parameters:
+ *      int: integer representing current system time
+ *
+ * Return value: bool representing if process can run
+ */
 bool Process::canComplete(int currentSystemTime) const {
     if ((requiredTime + currentSystemTime) <= deadline) {
         return true;
@@ -82,10 +123,30 @@ bool Process::canComplete(int currentSystemTime) const {
     return false;
 }
 
+/**
+ * getId
+ *
+ * This function returns the id of a process
+ *
+ * Parameters: none
+ *
+ * Return value: integer value of id
+ */
 int Process::getId() const {
     return id;
 }
 
+/**
+ * operator<
+ *
+ * This function determines if a process is less then a process passed.
+ * First checks deadline, then required time, and finally id.
+ *
+ * Parameters:
+ *      Process: process to be compared to
+ *
+ * Return value: boolean representing if current proc < passed proc
+ */
 bool Process::operator<(const Process &p) const {
     if (this->deadline < p.deadline) {
         return true;
@@ -93,23 +154,31 @@ bool Process::operator<(const Process &p) const {
     if (this->deadline == p.deadline && this-> requiredTime < p.requiredTime) {
         return true;
     }
-    if (this->deadline == p.deadline && this->requiredTime == p.requiredTime && this->id < p.id) {
+    if (this->deadline == p.deadline
+    && this->requiredTime == p.requiredTime && this->id < p.id) {
         return true;
     }
 
     return false;
 }
 
+/**
+ * operator>>
+ *
+ * This function reads in a process object.
+ *
+ * Parameters:
+ *      istream: input stream containing information
+ *      Process: process to be read into
+ *
+ * Return value: input stream modified after reading from it
+ */
 istream &operator>>(istream &is, Process &p) {
     is >> p.deadline >> p.requiredTime;
     cin.ignore();
     getline(is, p.information);
     return is;
 }
-
-//void Process::print() {
-//    cout << deadline << " " << requiredTime << " " << id << endl;
-//}
 
 
 

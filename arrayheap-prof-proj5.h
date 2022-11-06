@@ -71,6 +71,8 @@ class ArrayHeap {
         const Base &getMinItem() const;
         int getNumItems() const;
 
+        void checkOrder();
+
     private:
         Base *data;
         int *heapAndFreeStack;

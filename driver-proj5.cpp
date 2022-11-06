@@ -17,105 +17,53 @@ int main() {
     ArrayHeap<Process> batch;
     int numProcess = 0;
     int id = 0;
-    int startTime = 0, prevStart = 0, sysClock = 0;
+    int startTime = 0, sysClock = 0;
     int complete = 0, failed = 0;
 
     cin >> numProcess;
+    cin >> startTime;
+    while(numProcess != 0) {
+        Process task(id);
 
-    while (batch.getNumItems() >= 0) {
-        Process task(id++);
-        if (numProcess >= 0) {
-            cout << numProcess << endl;
-            cin >> startTime;
+        if(startTime > sysClock && batch.getNumItems() == 0){
+            sysClock = startTime;
+        }
+
+        if (id == 0) {
+
             cin >> task;
-        }
-
-        // If the task can complete before the deadline
-        /*
-        if (batch.getNumItems() == 0) {
-            cout << "current time is " << sysClock << ", the number of runnable processes is "
-                 << batch.getNumItems() << endl;
-
-            if (startTime > sysClock) {
-                cout << "moving the clock forward to " << startTime <<
-                " ticks since there are no processes to run" << endl;
-
-                sysClock = startTime;
-            }
-
-            if (startTime < sysClock) {
-                cout << "a new process has started at time " << startTime <<
-                     "; we will give it id " << task.getId() << " and put it on the heap"
-                     << endl;
-            }
-            else {
-                cout << "a new process has started at time " << sysClock <<
-                     "; we will give it id " << task.getId() << " and put it on the heap"
-                     << endl;
-            }
-
             batch.insert(task);
-
+            id++;
+            cin >> startTime;
         }
 
-        else {
-            batch.insert(task);
-            if (task.getId() != 0 && startTime == sysClock) {
-                continue;
-            }
-        }
-        */
-        batch.insert(task);
+        if (startTime <= sysClock) {
+            do {
+                task = Process(id++);
+                cin >> task;
+                batch.insert(task);
+//                cout << "inserted" << endl;
+//                batch.checkOrder();
 
-        if (startTime == sysClock && task.getId() != 0) {
-            numProcess--;
-            continue;
+            } while (cin >> startTime && startTime <= sysClock);
         }
-        /*
-        if (task.getId() == 0) {
-            prevStart = startTime;
-        }
-        else {
-            if (startTime == sysClock) {
-                continue;
-            }
-        }
-        prevStart = startTime;
-         */
 
-
-        task = batch.getMinItem();
-
-        if (task.canComplete(sysClock)) {
-            if (startTime < sysClock) {
-                cout << "running process id " << task.getId() << " at " <<
-                     sysClock << endl;
+        while (batch.getNumItems() > 0 && ((cin.fail() && numProcess) || startTime > sysClock)) {
+            if (batch.getMinItem().canComplete(sysClock)) {
+                cout << "running process id " << batch.getMinItem().getId() << " at " << sysClock << endl;
+                task = batch.getMinItem();
                 sysClock = task.run(sysClock);
-                //cout << "SYS: " << sysClock << endl;
+                complete++;
             }
             else {
-                cout << "running process id " << task.getId() << " at " <<
-                     startTime << endl;
-                sysClock = task.run(startTime);
-                //cout << "START: " << startTime << endl;
+                cout << "skipping process id " << batch.getMinItem().getId() << " at " << sysClock << endl;
+                sysClock++;
+                failed++;
             }
-
-            complete++;
+            batch.removeMinItem();
+            //batch.checkOrder();
+            numProcess--;
         }
-        else {
-            if (startTime < sysClock) {
-                cout << "skipping process id " << task.getId() << " at " <<
-                     sysClock << endl;
-            }
-            else {
-                cout << "skipping process id " << task.getId() << " at " <<
-                     startTime << endl;
-            }
-            sysClock++;
-            failed++;
-        }
-        batch.removeMinItem();
-        numProcess--;
     }
 
     cout << "final clock is                 " << sysClock << endl;

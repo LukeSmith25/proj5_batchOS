@@ -54,6 +54,8 @@ class Process {
 
         friend istream &operator>>(istream &is, Process &p);
 
+        //void print();
+
     private:
         int id;
         int deadline;
@@ -85,26 +87,16 @@ int Process::getId() const {
 }
 
 bool Process::operator<(const Process &p) const {
-    bool lessThan = false;
-    // Case 1: d1 < d2
-    if (deadline < p.deadline) {
+    if (this->deadline < p.deadline) {
         return true;
     }
-    else {
-        // Case 2: d1 = d2, check reqT1 < reqT2
-        if (deadline == p.deadline && requiredTime < p.requiredTime) {
-            return true;
-        }
-        else {
-            // Case 3: d1 = d2, reqT1 = reqT2, check id < id2
-            if ((deadline == p.deadline && requiredTime == p.requiredTime)
-            && id < p.id) {
-                return true;
-            }
-        }
+    if (this->deadline == p.deadline && this-> requiredTime < p.requiredTime) {
+        return true;
+    }
+    if (this->deadline == p.deadline && this->requiredTime == p.requiredTime && this->id < p.id) {
+        return true;
     }
 
-    // If not one of the 3 cases return false
     return false;
 }
 
@@ -114,6 +106,10 @@ istream &operator>>(istream &is, Process &p) {
     getline(is, p.information);
     return is;
 }
+
+//void Process::print() {
+//    cout << deadline << " " << requiredTime << " " << id << endl;
+//}
 
 
 

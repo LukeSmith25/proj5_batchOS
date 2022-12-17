@@ -91,17 +91,19 @@ ArrayHeap<Base>::~ArrayHeap() {
  */
 template<class Base>
 const ArrayHeap<Base> &ArrayHeap<Base>::operator=(const ArrayHeap<Base> &ah) {
-    numItems = ah.numItems;
-    capacity = ah.capacity;
+    if (!this) {
+        numItems = ah.numItems;
+        capacity = ah.capacity;
 
-    delete [] data;
-    delete [] heapAndFreeStack;
-    data = new Base[capacity];
-    heapAndFreeStack = new int[capacity];
+        delete [] data;
+        delete [] heapAndFreeStack;
+        data = new Base[capacity];
+        heapAndFreeStack = new int[capacity];
 
-    for (int i = 0; i < numItems; i++) {
-        data[i] = ah.data[i];
-        heapAndFreeStack[i] = ah.heapAndFreeStack[i];
+        for (int i = 0; i < numItems; i++) {
+            data[i] = ah.data[i];
+            heapAndFreeStack[i] = ah.heapAndFreeStack[i];
+        }
     }
 
     return *this;
